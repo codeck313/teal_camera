@@ -10,6 +10,10 @@ import imreg_dft
 import camera_test
 import rospy
 
+TEMPLATE_BASE_NAME = "/home/redop/catkin_ws/src/teal_camera/scripts/neg6_3"
+EQUAL_SCALE = False
+scaleAngleMatcher = 5  # percent of original size
+
 
 def filterImage(img):
     se = cv2.getStructuringElement(cv2.MORPH_RECT, (8, 8))
@@ -136,7 +140,8 @@ def rotate_image(image, angle):
 
 def templateMatch(img, template, angle):
     template = rotate_image(template, angle)
-    # cv2.imwrite("Template.png", template)
+    cv2.imwrite(
+        "/home/redop/catkin_ws/src/teal_camera/scripts/Template.png", template)
     w, h = template.shape[::-1]
     # with CodeTimer():
     res = cv2.matchTemplate(img, template, cv2.TM_CCORR)
@@ -144,43 +149,58 @@ def templateMatch(img, template, angle):
     top_left = min_loc
     bottom_right = (top_left[0] + w, top_left[1] + h)
     cv2.rectangle(img, top_left, bottom_right, 0, 2)
-
+    cen = (top_left[0]+w/2, top_left[1]+h/2)
+    # TODO can remove
+    cv2.circle(img, cen, 2, 0, 2)
     print(max_loc, min_loc, max_val)
     # if cv2.waitKey(0) == 32:
     #     cv2.imshow("result", img)
-    return img
+    if EQUAL_SCALE is True:
+        return img, (cen[0]*100/scaleAngleMatcher), (cen[1]*100/scaleAngleMatcher), angle
+    else:
+        return img, cen[0], cen[1], angle
 
 
-im0 = cv2.imread("/home/redop/catkin_ws/src/teal_camera/scripts/neg6_3.png", 0)
-template = cv2.imread(
-    "/home/redop/catkin_ws/src/teal_camera/scripts/neg6_edit_3.png", 0)
-scale_percent = 6  # percent of original size
-width = int(im0.shape[1] * scale_percent / 100)
-height = int(im0.shape[0] * scale_percent / 100)
-dim = (width, height)
+im1 = cv2.imread(TEMPLATE_BASE_NAME+".png", 0)
+template = cv2.imread(TEMPLATE_BASE_NAME+"_cropped.png", 0)
+
+
+if EQUAL_SCALE is True:
+    width = int(template.shape[1] * scaleAngleMatcher / 100)
+    height = int(template.shape[0] * scaleAngleMatcher / 100)
+    template = cv2.resize(template, (width, height),
+                          interpolation=cv2.INTER_AREA)
+
+width = int(im1.shape[1] * scaleAngleMatcher / 100)
+height = int(im1.shape[0] * scaleAngleMatcher / 100)
+dimAngle = (width, height)
 
 # resize image
-im0 = cv2.resize(im0, dim, interpolation=cv2.INTER_AREA)
+im1 = cv2.resize(im1, dimAngle, interpolation=cv2.INTER_AREA)
 
 
 def findCoordinate(im1, template, im2):
     # k = cv2.waitKey(0)
     # the image to be transformed
     # im1 = filterImage(img)
-    imgBig = np.copy(im2)
-
-    im2 = cv2.resize(im2, dim, interpolation=cv2.INTER_AREA)
+    # imgBig = np.copy(im2)
+    if EQUAL_SCALE is False:
+        im2Template = np.copy(im2)
+    im2 = cv2.resize(im2, dimAngle, interpolation=cv2.INTER_AREA)
     img_res, log_base, pcorr_shape = fft_log_polar([im1, im2])
     result = calc_phase_correlation(
         img_res[0], img_res[1], log_base, pcorr_shape)
-    return templateMatch(imgBig, template, result[0])
+    if EQUAL_SCALE is True:
+        return templateMatch(im2, template, result[0])
+    else:
+        return templateMatch(im2Template, template, result[0])
     # if k == 32:
     #     exit()
 
 
 def main():
-    ic = camera_test.image_converter(findCoordinate, im0, template)
-    rospy.init_node('image_converter', anonymous=True)
+    rospy.init_node('camera_server', anonymous=True)
+    ic = camera_test.image_converter(findCoordinate, im1, template)
     try:
         rospy.spin()
     except KeyboardInterrupt:
