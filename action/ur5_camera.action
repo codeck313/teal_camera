@@ -1,0 +1,13 @@
+#goal definition
+int8 start
+---
+#result definition
+int64 x
+int64 y
+float64 angle
+---
+#feedback
+int32 progress
+int64 x
+int64 y
+float64 angle
