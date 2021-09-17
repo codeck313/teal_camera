@@ -1,6 +1,5 @@
 #!/usr/bin/env python
 from __future__ import print_function
-
 import roslib
 import sys
 import rospy
@@ -13,6 +12,8 @@ from linetimer import CodeTimer
 
 import actionlib
 from teal_camera.msg import ur5_cameraAction, ur5_cameraResult, ur5_cameraFeedback
+
+import realWorldConversion
 
 
 class image_converter:
@@ -30,10 +31,14 @@ class image_converter:
         self.a_server = actionlib.SimpleActionServer(
             "camera_server", ur5_cameraAction, execute_cb=self.callbackexec, auto_start=False)
         self.a_server.start()
+        self.cam_coff = realWorldConversion.coefficient_calculator(
+            (398.5, 1644.0), (2247.5, 314.0), (240, 180))
 
     def callback(self, data):
         try:
             self.cv_image = self.bridge.imgmsg_to_cv2(data, "mono8")
+            self.cv_image = realWorldConversion.Image_undistortion(
+                self.cv_image)
             # cv2.namedWindow("Output", cv2.WINDOW_NORMAL)
             # if cv2.waitKey(0) == 32:
             #     cv2.imshow("Output", self.functionImage(
@@ -57,6 +62,8 @@ class image_converter:
             with CodeTimer():
                 self.cv_image, _x, _y, _angle = self.functionImage(
                     self.img0, self.template, self.cv_image)
+            _x, _y = realWorldConversion.position_calculator(
+                _x, _y, (398.5, 1644.0), self.cam_coff)
             feedback.x = _x
             feedback.y = _y
             feedback.angle = _angle
