@@ -5,6 +5,7 @@ int8 start
 int64 x
 int64 y
 float64 angle
+int32 valid
 ---
 #feedback
 int32 progress

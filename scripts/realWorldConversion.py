@@ -21,6 +21,7 @@ def Image_undistortion(input_image):
 
 
 def position_calculator(current_x, current_y, origin_pix, coefficient):
+    print(current_x, current_y)
     current_x_real = (origin_pix[0]-current_x)/coefficient[0]
     current_y_real = (origin_pix[1]-current_y)/coefficient[1]
     return current_x_real, current_y_real

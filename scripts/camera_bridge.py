@@ -32,11 +32,13 @@ class image_converter:
             "camera_server", ur5_cameraAction, execute_cb=self.callbackexec, auto_start=False)
         self.a_server.start()
         self.cam_coff = realWorldConversion.coefficient_calculator(
-            (398.5, 1644.0), (2247.5, 314.0), (240, 180))
+            (1644.0, 398.5), (314.0, 2247.5), (180, 240))
+        print(self.cam_coff)
 
     def callback(self, data):
         try:
             self.cv_image = self.bridge.imgmsg_to_cv2(data, "mono8")
+            # TODO
             self.cv_image = realWorldConversion.Image_undistortion(
                 self.cv_image)
             # cv2.namedWindow("Output", cv2.WINDOW_NORMAL)
@@ -62,13 +64,18 @@ class image_converter:
             with CodeTimer():
                 self.cv_image, _x, _y, _angle = self.functionImage(
                     self.img0, self.template, self.cv_image)
-            _x, _y = realWorldConversion.position_calculator(
-                _x, _y, (398.5, 1644.0), self.cam_coff)
-            feedback.x = _x
-            feedback.y = _y
+            result.valid = 0
+            if (_x != -1) and (_y != -1):
+                print("Object Found")
+                result.valid = 1
+                _x, _y = realWorldConversion.position_calculator(
+                    _x, _y, (398.5, 1644.0), self.cam_coff)
+
+            feedback.x = -_y
+            feedback.y = -_x
             feedback.angle = _angle
-            result.x = _x
-            result.y = _y
+            result.x = -_y
+            result.y = -_x
             result.angle = _angle
             self.a_server.publish_feedback(feedback)
             if success:
