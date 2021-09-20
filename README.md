@@ -1,4 +1,9 @@
+
+
+
+
 # Camera - Machine tending robot using Opencv using Ros framework
+
 ## Overview 
 The aim of the R&D project was to get the UR5 to pick the object from the workspace given in any orientation and position and drop it in the desired drop location.
 The training for the object will be done using just "one" master image and then it needs to be able to detect the orientation. To achieve this we had to use location, scale and angle invariant method. 
@@ -43,10 +48,10 @@ Camera Node Package: `git clone https://github.com/codeck313/teal_camera`
 `rosrun rqt_joint_trajectory_controller rqt_joint_trajectory_controller`
 
 7. For jogging using MoveIt use
-`roslaunch ur5_moveit_config ur5_moveit_planning_execution.launch'` and <br>
+`roslaunch ur5_moveit_config ur5_moveit_planning_execution.launch` and <br>
 `roslaunch ur5_moveit_config moveit_rviz.launch`
 
-8.  To run everything together use ur5_teal_bringup package. To start the whole process you can use the `roslaunch ur5_teal_bringup ur5_teal.launch` command.<br>
+8.  To run everything together use [ur5_teal_bringup](https://github.com/codeck313/teal-ur5/tree/master/ur5_teal_bringup) package. To start the whole process you can use the `roslaunch ur5_teal_bringup ur5_teal.launch` command.<br>
 Output will be like this:
 ![launch](https://user-images.githubusercontent.com/23121752/133966154-d0fe8ac1-9f41-4c32-9733-67c85db46398.png)
 
