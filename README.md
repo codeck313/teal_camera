@@ -2,7 +2,7 @@
 
 
 
-# Camera - Machine tending robot using Opencv using Ros framework
+# Machine tending robot using Opencv using Ros framework
 
 ## Overview 
 The aim of the R&D project was to get the UR5 to pick the object from the workspace given in any orientation and position and drop it in the desired drop location.
@@ -24,7 +24,7 @@ Updated RobotIQ 2f Gripper: 	`git clone https://github.com/codeck313/ur5-robotiq
 Robot Controller Package:  `git clone https://github.com/codeck313/teal-ur5`<br>
 Camera Node Package: `git clone https://github.com/codeck313/teal_camera`
 3. Use the *requirements.txt* file from [*teal_camera*](https://github.com/codeck313/teal_camera/blob/master/requirements.txt) to install all needed python packages.
-`pip install -r requirements.txt` 
+`pip2 install -r requirements.txt` 
 4. Install [UR5_driver](https://github.com/UniversalRobots/Universal_Robots_ROS_Driver) in your system
 5. Update the firmware of PolyScope to 3.7+
 
@@ -61,7 +61,7 @@ Output will be like this:
 ![pylon](https://user-images.githubusercontent.com/23121752/133966219-5cefdcc1-32e3-4cd1-8e60-1d3e77326257.png)
 
 
-10. Now we can start the camera detection node `rosrun teal_camera camera_detect.py` <br>
+10. Now before we can start the camera detection node, make sure you make the changes in the `config.py` file in the *teal_camera* node's script folder. Then you can do `rosrun teal_camera camera_detect.py` to start the node. <br>
 Output will be like this:
 ![camera](https://user-images.githubusercontent.com/23121752/133966256-aff6fa59-58d3-469d-b563-4ecf0439b39d.png)
 
@@ -128,3 +128,8 @@ Like this:
 
 6. If you want to rectify wrong planning you can put path constrains in rviz to make sure it doesn't happen.
 7. You can use the provided perspective file in teal-ur5 to get the testing rviz setup
+8. Sometimes while running `ur5_teal.launch` you might get this error:
+	` [ WARN] [1632389386.819670331]: The complete state of the robot is not yet known.  Missing finger_joint`
+	This means the driver node couldn't start. Try closing the launch file and trying it back again.
+9. While doing `pip2 install -r requirement.txt`  you might get some issues if pip is not updated so try doing this `python2 -m pip install --upgrade pip`. 
+
