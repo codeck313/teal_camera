@@ -2,7 +2,7 @@
 
 
 
-# Machine tending robot using Opencv using Ros framework
+# Camera - Machine tending robot using OpenCV and UR5, built around ROS framework
 
 ## Overview 
 The aim of the R&D project was to get the UR5 to pick the object from the workspace given in any orientation and position and drop it in the desired drop location.
