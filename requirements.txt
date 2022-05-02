@@ -4,6 +4,6 @@ linetimer==0.1.4
 matplotlib==3.3.4
 numpy==1.19.5
 opencv-python==4.5.3.56
-Pillow==8.3.2
+Pillow==9.0.0
 pypylon==1.7.2
 scipy==1.5.4
