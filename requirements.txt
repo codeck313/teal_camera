@@ -2,7 +2,7 @@ angles==1.9.12
 imutils==0.5.4
 linetimer==0.1.4
 matplotlib==3.3.4
-numpy==1.19.5
+numpy==1.22.0
 opencv-python==4.5.3.56
 Pillow>=9.0.1
 pypylon==1.7.2
